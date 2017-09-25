@@ -13,12 +13,12 @@ class NotesController < ApplicationController
   end
 
   def is_path?(path)
-    str = ""
     return false if path.blank?
 
     curr = nil
 
     folder_titles = path.split('/').to_a
+    return false if folder_titles.size() < 1
     folder_titles.shift
 
     folder_titles.each { |s|

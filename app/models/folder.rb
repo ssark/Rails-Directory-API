@@ -6,7 +6,8 @@ class Folder < ApplicationRecord
   has_many :notes, dependent: :destroy
 
   def path
-    curr = self
+    return '/' if self.parent.nil?
+    curr = self.parent
     path = ""
     while !curr.parent.nil? do
       path.prepend("/#{curr.title}")

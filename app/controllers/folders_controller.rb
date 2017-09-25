@@ -7,12 +7,12 @@ class FoldersController < ApplicationController
   end
 
   def is_path?(path)
-    str = ""
     return false if path.blank?
 
     curr = nil
 
     folder_titles = path.split('/').to_a
+    return false if folder_titles.size() < 1
     folder_titles.shift
 
     folder_titles.each { |s|
@@ -41,13 +41,13 @@ class FoldersController < ApplicationController
     if !params[:path].blank?
       if is_path?(params[:path])
         parent = Folder.find_by(title: get_parent(params[:path]))
-        return render json: { message: "Parent folder doesn't exist"}, status: :unprocessable_entity if parent.nil?
+        return render json: { error: "Parent folder doesn't exist"}, status: :unprocessable_entity if parent.nil?
         @folder = Folder.new(title: params[:title], folder_id: parent.id)
       else
         return render json: {error: 'Path does not exist'}, status: :unprocessable_entity
       end
     else
-      @folder = Folder.new(title: params[:title])
+      return render json: {error: 'Path not provided'}, status: :unprocessable_entity
     end
 
     if @folder.save
