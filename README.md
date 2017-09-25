@@ -17,27 +17,27 @@ In the way I structured the folder hierarchy, you are given one folder already (
 
 ### New Folder
 curl -X POST -F "title=folder_name" -F "path=/root/…/parent" http://localhost:3000/folders
-    *Some examples of New folder requests*
-    curl -X POST -F "title=first" -F "path=/root" http://localhost:3000/folders
-    --> {"title":"first","path":"/root"}
+###### Some examples of Ne folder requests
+curl -X POST -F "title=first" -F "path=/root" http://localhost:3000/folders
+--> {"title":"first","path":"/root"}
 
-    curl -X POST -F "path=/root" http://localhost:3000/folders
-    --> {"title":["can't be blank"]}
+curl -X POST -F "path=/root" http://localhost:3000/folders
+--> {"title":["can't be blank"]}
 
-    curl -X POST -F "title=first" http://localhost:3000/folders
-    --> {"error":"Path not provided"}
+curl -X POST -F "title=first" http://localhost:3000/folders
+--> {"error":"Path not provided"}
 
-    curl -X POST -F "title=first" -F "path=/root/first" http://localhost:3000/folders
-    --> {"title":["has already been taken"]}
+curl -X POST -F "title=first" -F "path=/root/first" http://localhost:3000/folders
+--> {"title":["has already been taken"]}
 
-    curl -X POST -F "title=f" -F "path=/root/foo" http://localhost:3000/folders
-    --> `{"error":"Path does not exist"}` because `foo` isn't an existing folder
+curl -X POST -F "title=f" -F "path=/root/foo" http://localhost:3000/folders
+--> `{"error":"Path does not exist"}` because `foo` isn't an existing folder
 
-    `curl -X POST -F "title=f" -F "path=/first/root" http://localhost:3000/folders`
-    --> `{"error":"Path does not exist"}` because `/first/root` isn't an existing folder hierarchy. Actually `first` is nested in `root`
+`curl -X POST -F "title=f" -F "path=/first/root" http://localhost:3000/folders`
+--> `{"error":"Path does not exist"}` because `/first/root` isn't an existing folder hierarchy. Actually `first` is nested in `root`
 
-    `curl -X POST -F "title=f" -F "path=/" http://localhost:3000/folders`
-    --> `{"error":"Path does not exist"}` because no folder name was actually provided here.
+`curl -X POST -F "title=f" -F "path=/" http://localhost:3000/folders`
+--> `{"error":"Path does not exist"}` because no folder name was actually provided here.
 
 ### New Note
 curl -X POST -F "path=/folder/path" -F "title=my_note" -F "content=content of note" http://localhost:3000/notes
