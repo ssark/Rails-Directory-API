@@ -9,6 +9,7 @@ class NotesController < ApplicationController
 
   # GET /notes/1
   def show
+    return render json: {error: 'Note does not exist'} if @note.nil?
     render json: @note
   end
 
