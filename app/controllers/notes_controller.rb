@@ -4,7 +4,6 @@ class NotesController < ApplicationController
   # GET /notes
   def index
     @notes = Note.all
-
     render json: @notes
   end
 
@@ -13,10 +12,48 @@ class NotesController < ApplicationController
     render json: @note
   end
 
+  def is_path?(path)
+    str = ""
+    return false if path.blank?
+
+    curr = nil
+
+    folder_titles = path.split('/').to_a
+    folder_titles.shift
+
+    folder_titles.each { |s|
+      if s.equal?(folder_titles.first) && curr == nil
+        curr = Folder.find_by(title: s)
+        return false if curr.nil?
+      else
+        child = Folder.find_by(title: s)
+        return false if child.nil?
+        if curr.children.include?(child) && child.parent = curr
+          curr = child
+        else
+          return false
+        end
+      end
+    }
+    true
+  end
+
+  def get_dir(path)
+    path.split('/').to_a.last
+  end
+
   # POST /notes
   def create
-    folder = Folder.find_by(title: params[:folder])
-    return render json: { message: "Folder doesn't exist #{params[:folder]}"}, status: :unprocessable_entity if folder.nil?
+    if !params[:path].blank?
+      if is_path?(params[:path])
+        folder = Folder.find_by(title: get_dir(params[:path]))
+        return render json: { message: "Target folder doesn't exist"}, status: :unprocessable_entity if folder.nil?
+      else
+        return render json: {error: 'Path does not exist'}, status: :unprocessable_entity
+      end
+    else
+      render json: {error: 'No path specified'}, status: :unprocessable_entity
+    end
 
     @note = Note.new(title: params[:title], content: params[:content], folder_id: folder.id)
 
@@ -46,11 +83,11 @@ class NotesController < ApplicationController
 
   def move
     return render json: {error: "Note #{params[:title]} doesn't exist"}, status: :unprocessable_entity if @note.nil?
-    from = Folder.find_by(title: params[:from])
-    to = Folder.find_by(title: params[:to])
+    from = Folder.find_by(title: get_dir(params[:from])) if is_path?(params[:from])
+    to = Folder.find_by(title: get_dir(params[:to])) if is_path?(params[:to])
 
-    return render json: {error: "Folder #{params[:from]} doesn't exist"}, status: :unprocessable_entity if from.nil?
-    return render json: {error: "Folder #{params[:to]} doesn't exist"}, status: :unprocessable_entity if to.nil?
+    return render json: {error: "From path doesn't exist"}, status: :unprocessable_entity if from.nil?
+    return render json: {error: "To path doesn't exist"}, status: :unprocessable_entity if to.nil?
 
     if from.notes.include?(@note) && @note.folder = from
       @note.update(folder_id: to.id)
@@ -68,6 +105,8 @@ class NotesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def note_params
-      params.require(:note).permit(:title, :new_title, :content, :folder, :from, :to)
+      params.require(:note).permit(:title, :new_title, :content, :from, :to, :path)
     end
 end
+
+

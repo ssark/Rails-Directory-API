@@ -4,7 +4,7 @@ class Note < ApplicationRecord
 
   def path
     curr = folder
-    path = "/#{title}"
+    path = ""
     while !curr.parent.nil? do
       path.prepend("/#{curr.title}")
       curr = curr.parent
