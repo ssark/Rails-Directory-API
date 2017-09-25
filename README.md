@@ -16,21 +16,21 @@ In the way I structured the folder hierarchy, you are given one folder already (
 ## Requests
 
 ### New Folder
-curl -X POST -F "title=folder_name" -F "path=/root/…/parent" http://localhost:3000/folders
-###### Some examples of Ne folder requests
-curl -X POST -F "title=first" -F "path=/root" http://localhost:3000/folders
---> {"title":"first","path":"/root"}
+`curl -X POST -F "title=folder_name" -F "path=/root/…/parent" http://localhost:3000/folders`
+###### Some examples of New folder requests
+`curl -X POST -F "title=first" -F "path=/root" http://localhost:3000/folders`
+--> `{"title":"first","path":"/root"}`
 
-curl -X POST -F "path=/root" http://localhost:3000/folders
---> {"title":["can't be blank"]}
+`curl -X POST -F "path=/root" http://localhost:3000/folders`
+--> `{"title":["can't be blank"]}`
 
-curl -X POST -F "title=first" http://localhost:3000/folders
---> {"error":"Path not provided"}
+`curl -X POST -F "title=first" http://localhost:3000/folders`
+--> `{"error":"Path not provided"}`
 
-curl -X POST -F "title=first" -F "path=/root/first" http://localhost:3000/folders
---> {"title":["has already been taken"]}
+`curl -X POST -F "title=first" -F "path=/root/first" http://localhost:3000/folders`
+--> `{"title":["has already been taken"]}`
 
-curl -X POST -F "title=f" -F "path=/root/foo" http://localhost:3000/folders
+`curl -X POST -F "title=f" -F "path=/root/foo" http://localhost:3000/folders`
 --> `{"error":"Path does not exist"}` because `foo` isn't an existing folder
 
 `curl -X POST -F "title=f" -F "path=/first/root" http://localhost:3000/folders`
@@ -40,18 +40,18 @@ curl -X POST -F "title=f" -F "path=/root/foo" http://localhost:3000/folders
 --> `{"error":"Path does not exist"}` because no folder name was actually provided here.
 
 ### New Note
-curl -X POST -F "path=/folder/path" -F "title=my_note" -F "content=content of note" http://localhost:3000/notes
+`curl -X POST -F "path=/folder/path" -F "title=my_note" -F "content=content of note" http://localhost:3000/notes`
 
 ### View note
-curl -X GET http://localhost:3000/notes/name_of_note
+`curl -X GET http://localhost:3000/notes/name_of_note`
 
 ### Move note
-curl -X PATCH -F "title=root_note" -F "from=curr/path/to/note" -F "to=target/path" http://localhost:3000/notes/move
+`curl -X PATCH -F "title=root_note" -F "from=curr/path/to/note" -F "to=target/path" http://localhost:3000/notes/move`
 
 ### View all data
-curl http://localhost:3000/
+`curl http://localhost:3000/`
 
-Note: all folder paths should begin with `/` and then the folder name. For example, `/root/first_level` is a valid path but `root/first_level` isn't.
+Note: all folder paths should begin with `/` and then the folder name. For example, `/root/first_level` is a valid path but `root/first_level` isn't. Additionally, because `root` is the root folder, all paths will also start off with `/root`. For example, `/root/first_level` is a valid path but `/first_level/root` wouldn't be.
 
 ## Explanations:
 

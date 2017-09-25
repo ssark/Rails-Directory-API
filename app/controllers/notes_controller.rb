@@ -76,13 +76,16 @@ class NotesController < ApplicationController
     end
 
     if @note.update(update_params)
-      render json: @note
+      render json: @note.as_json
     else
       render json: @note.errors, status: :unprocessable_entity
     end
   end
 
   def move
+    return render json: {error: "No from path provided"}, status: :unprocessable_entity if params[:from].blank?
+    return render json: {error: "No to path provided"}, status: :unprocessable_entity if params[:to].blank?
+
     return render json: {error: "Note #{params[:title]} doesn't exist"}, status: :unprocessable_entity if @note.nil?
     from = Folder.find_by(title: get_dir(params[:from])) if is_path?(params[:from])
     to = Folder.find_by(title: get_dir(params[:to])) if is_path?(params[:to])
@@ -92,7 +95,7 @@ class NotesController < ApplicationController
 
     if from.notes.include?(@note) && @note.folder = from
       @note.update(folder_id: to.id)
-      render json: @note
+      render json: @note.as_json
     else
       render json: {error: "Note #{@note.title} can't be found in folder #{from.title}"}, status: :unprocessable_entity
     end
