@@ -4,37 +4,43 @@
 
 To start off, you can run `bundle install` to install all gems. Then run `rake db:drop` to drop any remnant data in the SQLite database. I did delete the database, but it'll be safer if you run this first. Then run `rake db:create` then `rake db:migrate` then `rake db:seed`.
 
+## Folder
+
 In the way I structured the folder hierarchy, you are given one folder already (it was seeded to the app). This folder is called `root` and functions as the root folder; all other folders nest under this. If a folder is nested, it'll have a `parent` folder. Every folder has either 0 or more `children`. A folder can also contain 0 or more `notes`.
+
+## Note
+- Must always have a `title`
+- Doesn't always have to have `content`
+- Must always be contained within a `folder`
 
 ## Requests
 
 ### New Folder
 curl -X POST -F "title=folder_name" -F "path=/root/…/parent" http://localhost:3000/folders
-#### examples
-curl -X POST -F "title=first" -F "path=/root" http://localhost:3000/folders
---> {"title":"first","path":"/root"}
+    *Some examples of New folder requests*
+    curl -X POST -F "title=first" -F "path=/root" http://localhost:3000/folders
+    --> {"title":"first","path":"/root"}
 
-curl -X POST -F "path=/root" http://localhost:3000/folders
---> {"title":["can't be blank"]}
+    curl -X POST -F "path=/root" http://localhost:3000/folders
+    --> {"title":["can't be blank"]}
 
-curl -X POST -F "title=first" http://localhost:3000/folders
---> {"error":"Path not provided"}
+    curl -X POST -F "title=first" http://localhost:3000/folders
+    --> {"error":"Path not provided"}
 
-curl -X POST -F "title=first" -F "path=/root/first" http://localhost:3000/folders
---> {"title":["has already been taken"]}
+    curl -X POST -F "title=first" -F "path=/root/first" http://localhost:3000/folders
+    --> {"title":["has already been taken"]}
 
-curl -X POST -F "title=f" -F "path=/root/foo" http://localhost:3000/folders
---> `{"error":"Path does not exist"}` because `foo` isn't an existing folder
+    curl -X POST -F "title=f" -F "path=/root/foo" http://localhost:3000/folders
+    --> `{"error":"Path does not exist"}` because `foo` isn't an existing folder
 
-`curl -X POST -F "title=f" -F "path=/first/root" http://localhost:3000/folders`
---> `{"error":"Path does not exist"}` because `/first/root` isn't an existing folder hierarchy. Actually `first` is nested in `root`
+    `curl -X POST -F "title=f" -F "path=/first/root" http://localhost:3000/folders`
+    --> `{"error":"Path does not exist"}` because `/first/root` isn't an existing folder hierarchy. Actually `first` is nested in `root`
 
-`curl -X POST -F "title=f" -F "path=/" http://localhost:3000/folders`
---> `{"error":"Path does not exist"}` because no folder name was actually provided here.
-
+    `curl -X POST -F "title=f" -F "path=/" http://localhost:3000/folders`
+    --> `{"error":"Path does not exist"}` because no folder name was actually provided here.
 
 ### New Note
-curl -X POST -F "path=folder/path" -F "title=my_note" -F "content=content of note" http://localhost:3000/notes
+curl -X POST -F "path=/folder/path" -F "title=my_note" -F "content=content of note" http://localhost:3000/notes
 
 ### View note
 curl -X GET http://localhost:3000/notes/name_of_note
@@ -44,6 +50,8 @@ curl -X PATCH -F "title=root_note" -F "from=curr/path/to/note" -F "to=target/pat
 
 ### View all data
 curl http://localhost:3000/
+
+Note: all folder paths should begin with `/` and then the folder name. For example, `/root/first_level` is a valid path but `root/first_level` isn't.
 
 ## Explanations:
 
