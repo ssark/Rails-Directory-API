@@ -2,6 +2,7 @@ class Note < ApplicationRecord
   validates :title, presence: true, uniqueness: true
   belongs_to :folder
 
+  # returns path of note
   def path
     curr = folder
     path = ""
@@ -18,7 +19,6 @@ class Note < ApplicationRecord
       :methods => [:path],
     )
   end
-
 end
 
 

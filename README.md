@@ -2,16 +2,14 @@
 
 ## Set up
 
-To start off, you can run `bundle install` to install all gems. Then run `rake db:drop` to drop any remnant data in the SQLite database. I did delete the database, but it'll be safer if you run this first. Then run `rake db:create` then `rake db:migrate` then `rake db:seed`.
+To start off, you can run `bundle install` to install all gems. Now you can run `rake db:create` then `rake db:migrate` and finally `rake db:seed`. You can now run `rails s` and whilst the server is running in the background, you can run the requests below to interact with the API.
 
 ## Folder
 
 In the way I structured the folder hierarchy, you are given one folder already (it was seeded to the app). This folder is called `root` and functions as the root folder; all other folders nest under this. If a folder is nested, it'll have a `parent` folder. Every folder has either 0 or more `children`. A folder can also contain 0 or more `notes`.
 
 ## Note
-- Must always have a `title`
-- Doesn't always have to have `content`
-- Must always be contained within a `folder`
+A `note` must always have a `title` but doesn't always have to have `content`, and must always be contained within a `folder`.
 
 ## Requests
 
@@ -51,7 +49,7 @@ In the way I structured the folder hierarchy, you are given one folder already (
 ### View all data
 `curl http://localhost:3000/`
 
-Note: all folder paths should begin with `/` and then the folder name. For example, `/root/first_level` is a valid path but `root/first_level` isn't. Additionally, because `root` is the root folder, all paths will also start off with `/root`. For example, `/root/first_level` is a valid path but `/first_level/root` wouldn't be.
+Note: all folder paths should begin with `/` and then the folder name. For example, `/root/first_level` is a valid path but `root/first_level` isn't.
 
 ## Explanations:
 
@@ -59,5 +57,4 @@ Note: all folder paths should begin with `/` and then the folder name. For examp
 I initially went along with the idea of nesting all of the routes belonging to `Note` under those of `Folder` but this complicated the URL structure to which we sent requests which wouldn't be very developer-friendly.
 
 ### Why do I use `title`s of folders and notes to identify them in my URLs?
-I decided to get rid of the default `:id` paramater in URLs that Rails gives us upon scaffolding so that the URL structure would be more developer-friendly. It's hard to keep track of ids of folders or notes created. Another major reason for this choice was that using ids within the URL strucuture would expose the backend i.e. a developer could figure out how many instances of a particular object were created/destroyed based on their object's id number. This isn't necessarily harmful but I think hiding one's underlying implementation and data is good practice. A caveat of this choice though is that all `title`s of folders and notes have to be unique since `title` is now used as the unique identifier. I know that `validates :title, uniqueness: true` doesn't _strictly always_ maintain the uniqueness of the `title` in the underlying database, but I think
- it's good enough for our use here.
+I decided to get rid of the default `:id` parameter in URLs that Rails gives us upon scaffolding so that the URL structure would be more developer-friendly. It's hard to keep track of ids of folders or notes created. Another major reason for this choice was that using ids within the URL strucuture would expose the backend i.e. a developer could figure out how many instances of a particular object were created/destroyed based on their object's id number. This isn't necessarily harmful here but I think hiding one's underlying implementation and data is good practice. A caveat of this choice though is that all `title`s of folders and notes have to be unique since `title` is now used as the unique identifier. I know that `validates :title, uniqueness: true` doesn't _strictly always_ maintain the uniqueness of the `title` in the underlying database, but I think it's good enough for our use here.

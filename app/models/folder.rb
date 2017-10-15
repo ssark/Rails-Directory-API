@@ -5,6 +5,7 @@ class Folder < ApplicationRecord
   has_many :children, class_name: 'Folder', dependent: :destroy
   has_many :notes, dependent: :destroy
 
+  # returns the path of the folder
   def path
     return '/' if self.parent.nil?
     curr = self.parent
