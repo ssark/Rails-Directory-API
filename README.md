@@ -1,4 +1,4 @@
-# README
+# API-only Rails app for Computer directory structure
 
 ## Set up
 
